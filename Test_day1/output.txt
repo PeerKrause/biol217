@@ -1,0 +1,6 @@
+insgesamt 17
+drwx------ 2 stu245106 studierende     0 Jan 22 13:40 .
+drwx------ 2 stu245106 studierende 16384 Jan 22 13:37 ..
+-rwx------ 1 stu245106 studierende     8 Jan 22 13:32 favcuisine.txt
+-rwx------ 1 stu245106 studierende    21 Jan 22 13:31 my_hobby.txt
+-rwx------ 1 stu245106 studierende     0 Jan 22 13:40 output.txt
