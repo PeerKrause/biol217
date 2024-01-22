@@ -16,4 +16,4 @@ cp source destination
 inline code:
 this is the command `cp`
 
-## Task: How to add links and images 
+## Task: How to add (upload) links and images 
