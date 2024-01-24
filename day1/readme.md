@@ -50,11 +50,8 @@ https://github.com/AammarTufail/Biol217-2024.git
 
 #### Task: How to add (upload) links and images  
 
+  
  
- 
- 
- 
-
 ## Protocol Day 2 
 
  
@@ -502,10 +499,7 @@ BGR_130527_mapped_clean_R2.fastq.gz
 
 BGR_130708_mapped_clean_R1.fastq.gz 
 
-BGR_130708_mapped_clean_R2.fastq.gz 
-
- 
-
+BGR_130708_mapped_cleap
 The finished command is shown in the following: 
 
  
@@ -596,4 +590,202 @@ emacs anvio_slurm
 
 The processing will take some time. If there are no errors keep the megahit running. 
 
+
+Zussamenfassung day2:
+
+ fastqc beinhalten die reads
+ first line beinhaltet den identifiere, name
+ then quality
+
+ general cut off for the reads is 20
+
+ assembling > assembled sequences with contigs
  
+ html erstellt (qualiy check)
+
+ assembled with megahit
+
+ Binning
+: looking wih contigs belong together
+
+
+day two: shotgun sequencing, de novo assembly (with megahiot)
+day 3: binning
+
+mags, always have gaps
+
+
+k=number of the nukleotides that are counted together (cutoff)
+
+
+forward read and backwards read are both counted the number of nukleotides are counted
+only palindromes are not counted
+
+
+## Protocol Day 3
+
+### Assembly visualization
+
+The final contigs can be found in the direction /3_coassemmbly
+
+go to the folder, if there are `final.contigs.fa` file the assembly worked.
+
+Use `head` or `tail` to look at the start or end of the nukleotide contigs.
+
+```
+head final.contigs.fa
+```
+
+use the following command to see how many contigs there are:
+
+```
+grep -c ">" final.contigs.fa
+```
+`>` steht in den fa files vor jedem contig. Es wird also die Anzahl der > gezählt um die anzahl der contigs zu ermitteln
+
+There are 55836 contigs
+
+To visualize the graph Bandage is use. Therefore it must be installed 
+
+First the fasta files need to be convertet.
+
+```
+megahit_toolkit contig2fastg 99 final.contigs.fa > final.contigs.fastg
+```                  
+
+The fasta file is now a FASTG file: k99.fastg, which can be loaded into Bandage.
+
+### Quality Assessment of Assemblies
+
+```
+metaquast -t 6 -o /PATH/TO/3_metaquast -m 1000 final.contigs.fa
+```
+
+the output is put in the code, where the file is. also the file name for the assembled contigs is put in.
+
+```
+metaquast -t 6 -o .../3_metaquast -m 1000 final.contigs.fa
+```
+
+Add to the BATCH script: 
+
+Change the headdings!
+
+```
+cd /work_beegfs/sunam233/Metagenomics/3_coassembly
+```
+
+```
+metaquast -t 6 -o ../3_metaquast -m 1000 final.contigs.f
+```
+
+after running the BATCH script with `sbatch`
+
+the xxx can be found in the output folder `3_metaquast`
+
+If there is something in this folder and no error notes in the Anvio.slurm.err continue.
+
+### Looking at the report
+
+Next step is to copy the report.pdf from the 3_metaquast to the computer harddrive.
+
+use the following command to copy:
+
+```
+scp sunam233@caucluster.rz.uni-kiel.de:/work_beegfs/sunam233/Metagenomics/3_metaquast/*.pdf .
+```
+
+Looking at our pdf file `report.pdf` we can answer the following questions:
+
+What is your N50 value?  Why is this value relevant?
+- 3014
+- N50 is the length for which the collection of all contigs of that length or longer covers at least half an assembly
+
+How many contigs are assembled?
+- 55836, einsehbar mit head in den fa files
+
+What is the total length of the contigs?
+- 142642586
+
+
+N50 ist die Länge, für die die Sammlung aller Contigs dieser Länge oder länger mindestens die Hälfte einer Assembly abdeckt
+
+### Genome Binning reformating (First step for binning)
+
+neuen ordner erstell in den Metagenomics path
+
+```
+mkdir 3_binning_out
+```
+Use following helps to create the command for the first binning procces:
+
+```
+anvi-script-reformat-fasta ? -o ? --min-len 1000 --simplify-names --report-file name_conversion.txt
+```
+
+```
+anvi-script-reformat-fasta final.contigs.fa -o /PATH/TO/YOUR/contigs.anvio.fa --min-len 1000 --simplify-names --report-file name_conversion.txt
+```
+
+Final Code for genome binning can be put in BATCH script:
+
+
+```
+anvi-script-reformat-fasta final.contigs.fa -o ../3_binning_out/contigs.anvio.fa --min-len 1000 --simplify-names --report-file binning_conversion.txt
+```
+
+### Mapping
+
+Then you need to map your raw reads onto your assembled contigs. Mapping will be done using bowtie2. Use the following command to index your mapping reference fasta file. Needed for the next steps and basically makes mapping faser.
+
+The next command is to index the mapping reference fasta file:
+
+run it three times cause f three raw samples
+
+```
+module load bowtie2
+bowtie2-build contigs.anvio.fa contigs.anvio.fa.index
+```
+
+Now bowtie2 can be used for the actual mapping. The loop command, below have the single command for better understanding:
+
+``` 
+module load bowtie2
+bowtie2 --very-fast -x contigs.anvio.fa.index -1 ? -2 ? -S ?
+```
+
+This command has do be done wiht the raw reads, therefore we use it three times for the three xxx raw read files:
+
+
+```
+module load bowtie2
+bowtie2 --very-fast -x contigs.anvio.fa.index -1 ../2_fastp/BGR_130305_mapped_clean_R1.fastq.gz -2 ../BGR_130305_mapped_clean_R2.fastq.gz -S SAMPLE.sam
+```
+
+```
+module load bowtie2
+bowtie2 --very-fast -x contigs.anvio.fa.index -1 ../2_fastp/BGR_130527_mapped_clean_R1.fastq.gz -2 ../BGR_130527_mapped_clean_R2.fastq.gz -S SAMPLE.sam
+```
+
+```
+module load bowtie2
+bowtie2 --very-fast -x contigs.anvio.fa.index -1 ../2_fastp/BBGR_130708_mapped_clean_R1.fastq.gz -2 ../BGR_130708_mapped_clean_R2.fastq.gz -S SAMPLE.sam
+```
+
+sbatch script for mapping:
+
+
+cd /work_beegfs/sunam233/Metagenomics/3_binning_out
+
+module load bowtie2
+bowtie2-build contigs.anvio.fa contigs.anvio.fa.index
+
+bowtie2 --very-fast -x contigs.anvio.fa.index -1 ../2_fastp/BGR_130305_mapped_clean_R1.fastq.gz -2 ../2_fastp/BGR_130305_mapped_clean_R2.fastq.gz -S BGR_13030.sam
+
+bowtie2 --very-fast -x contigs.anvio.fa.index -1 ../2_fastp/BGR_130527_mapped_clean_R1.fastq.gz -2 ../2_fastp/BGR_130527_mapped_clean_R2.fastq.gz -S BGR_13052.sam
+
+bowtie2 --very-fast -x contigs.anvio.fa.index -1 ../2_fastp/BGR_130708_mapped_clean_R1.fastq.gz -2 ../2_fastp/BGR_130708_mapped_clean_R2.fastq.gz -S BBGR_13070.sam
+
+
+
+Following command is the actual loop command:
