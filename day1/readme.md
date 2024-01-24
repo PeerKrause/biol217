@@ -780,12 +780,152 @@ cd /work_beegfs/sunam233/Metagenomics/3_binning_out
 module load bowtie2
 bowtie2-build contigs.anvio.fa contigs.anvio.fa.index
 
-bowtie2 --very-fast -x contigs.anvio.fa.index -1 ../2_fastp/BGR_130305_mapped_clean_R1.fastq.gz -2 ../2_fastp/BGR_130305_mapped_clean_R2.fastq.gz -S BGR_13030.sam
+bowtie2 --very-fast -x contigs.anvio.fa.index -1 ../2_fastp/BGR_130305_mapped_clean_R1.fastq.gz -2 ../2_fastp/BGR_130305_mapped_clean_R2.fastq.gz -S BGR_130305.sam
 
-bowtie2 --very-fast -x contigs.anvio.fa.index -1 ../2_fastp/BGR_130527_mapped_clean_R1.fastq.gz -2 ../2_fastp/BGR_130527_mapped_clean_R2.fastq.gz -S BGR_13052.sam
+bowtie2 --very-fast -x contigs.anvio.fa.index -1 ../2_fastp/BGR_130527_mapped_clean_R1.fastq.gz -2 ../2_fastp/BGR_130527_mapped_clean_R2.fastq.gz -S BGR_130527.sam
 
-bowtie2 --very-fast -x contigs.anvio.fa.index -1 ../2_fastp/BGR_130708_mapped_clean_R1.fastq.gz -2 ../2_fastp/BGR_130708_mapped_clean_R2.fastq.gz -S BBGR_13070.sam
+bowtie2 --very-fast -x contigs.anvio.fa.index -1 ../2_fastp/BGR_130708_mapped_clean_R1.fastq.gz -2 ../2_fastp/BGR_130708_mapped_clean_R2.fastq.gz -S BGR_130708.sam
 
 
 
 Following command is the actual loop command:
+
+```
+module load bowtie2
+cd /PATH/TO/FASTP
+for i in `ls *_R1.fastq.gz`;
+do
+    second=`echo ${i} | sed 's/_R1/_R2/g'`
+bowtie2 --very-fast -x /PATH/TO/index -1 ${i} -2 ${second} -S /PATH/TO/4_mapping/"$i".sam 
+done
+
+```
+
+#### samtools
+
+The output will be a sequence mapping file (SAM) with the .sam extension and which we convert to binary alignment and map (BAM) file with the .bam extension using samtools with the following loop
+
+to view the mapped files use:
+fill in the File names
+
+```
+module load samtools (only neccesarry one time)
+samtools view -bS sam_file.sam > bam_file.bam
+```
+
+Do it three times for the BGR Probes:
+
+```
+samtools view -bS BGR_130305.sam > BGR_130305.bam
+```
+
+```
+samtools view -bS BGR_130527.sam > BGR_130527.bam
+```
+
+```
+samtools view -bS BGR_130708.sam > BGR_130708.bam
+```
+
+Full SBATCH script for samtools:
+
+```
+cd /work_beegfs/sunam233/Metagenomics/3_binning_out
+
+module load samtools
+
+samtools view -bS BGR_130305.sam > BGR_130305.bam
+
+samtools view -bS BGR_130527.sam > BGR_130527.bam
+
+samtools view -bS BGR_130708.sam > BGR_130708.bam
+```
+
+### Contigs data preparation!
+
+You need to convqqase is an anvi’o contigs-db database that contains key information associated with your sequences.
+
+anvi-gen-contigs-database -f contigs.anvio.fa -o contigs.db -n 'biol217'
+
+Output anpassen und directory sowie BATCH Titel ändern.
+
+```
+cd /work_beegfs/sunam233/Metagenomics/3_binning_out
+```
+
+```
+anvi-gen-contigs-database -f contigs.anvio.fa -o ../5_anvio_profiles/contigs.db -n 'biol217'
+```
+
+skript anpassen!
+
+
+
+Then you need to perform an HMM search on your contigs. "Basically, in anvi’o, Hidden Markov Models (or HMMs for short) are used to search for specific genes with known functions in a larger dataset"
+
+```
+anvi-run-hmms -c contigs.db
+```
+memory:  24 G 
+--num-threads 4
+
+
+Batch skript for anvirun:
+
+cd /work_beegfs/sunam233/Metagenomics/5_anvio_profiles
+
+anvi-run-hmms -c contigs.db --num-threads 4
+
+
+
+### srun
+
+Put following command in the Terminal and execute:
+
+srun --reservation=biol217 --pty --mem=10G --nodes=1 --tasks-per-node=1 --cpus-per-task=1 --nodelist=node002 /bin/bash
+
+dann arbeitsbereich wurde geändert auf node105 (normalersweise arbeiten allle auf cluster, aber es werden minicluster erstellt auf dem das data prep weiter läuft)
+
+Anschließend folgende Module laden:
+
+``` module load gcc12-env/12.1.0
+module load miniconda3/4.12.0
+conda activate anvio-8
+
+anvi-display-contigs-stats contigs.db
+ ```
+
+### Binning with ANVI´O
+
+Prepare for the next day: 
+
+#### Anviprofile
+From here on you will be using ANVI´O, an ANalysis and Visualization platform for microbial ´Omics.
+
+Together with a very extensive program, anvi’o offers a lot of explanations on every command or data type it uses, so, whenever you need more information than provided here, look through the online tutorial Anvi'o User Tutorial for Metagenomic Workflow !
+
+anvi’o does this by using samtools in the background, it merges two separate samtools commands (sorting and indexing = fo each .bam file you have, there also is a .bam.bai file in the same directory) into one.
+
+
+The first step will be to sort and index your .bam files.
+For this use the following command:
+
+for i in *.bam; do anvi-init-bam $i -o "$i".sorted.bam; done
+
+anvi-profile -i ? -c ? --output-dir ?
+
+anvi-profile -i YOUR_SORTED.bam -c contigs.db --output-dir OUTPUT_DIR
+
+finished code:
+
+```
+anvi-profile -i *.bam -c ../5_anvio_profiles/contigs.db --output-dir ../5_anvio_profiles
+```
+
+
+#### Anvi Merge
+
+
+anvi-merge /PATH/TO/SAMPLE1/? /PATH/TO/SAMPLE2/? /PATH/TO/SAMPLE3/? -o ? -c ? --enforce-hierarchical-clustering
+
+anvi-merge /PATH/TO/SAMPLE1/PROFILE.db /PATH/TO/SAMPLE2/PROFILE.db /PATH/TO/SAMPLE3/PROFILE.db -o /PATH/TO/merged_profiles -c /PATH/TO/contigs.db --enforce-hierarchical-clustering
