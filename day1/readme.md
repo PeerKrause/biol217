@@ -1096,3 +1096,41 @@ How many Archaea bins do you get that are of High Quality? How many Bacteria bin
 
 Metabat: > Archea - 0 (only one Archaea with redundancy 5,26 and completion 97,3), > Bacteria - 10
 Maxbin: > Archea - 0 (only one Archaea with redundancy 80,26 and completion 96,05) > Bacteria - 3
+
+### Bin refinement
+
+Do this in Terminal again:
+
+First, you can use the following command to get a list of your collections; then use anvi-summarize:
+
+```
+anvi-summarize -p ./6_merged_profiles/PROFILE.db -c ./5_anvio_profiles/contigs.db --list-collections
+```
+
+Then use anvi-summarize as displayed below.
+
+```
+anvi-summarize -c ./5_anvio_profiles/contigs.db -p ./6_merged_profiles/PROFILE.db -C METABAT -o SUMMARY_METABAT2 --just-do-it
+```
+
+As each bin is stored in its own folder, use:
+
+
+cd ./SUMMARY_METABAT2/bin_by_bin
+
+mkdir ../../ARCHAEA_BIN_REFINEMENT
+
+cp /METABAT__25/*.fa ../../ARCHAEA_BIN_REFINEMENT/
+
+
+
+cp ../ARCHAEA_BIN_REFINEMENT/*.fa /PATH/TO/ARCHAEA_BIN_REFINEMENT/
+
+
+
+
+bin for archea 
+
+METABAT__25 | ARCHAEA
+METABAT__40 | ARCHAEA
+METABAT__15 | ARCHAEA
