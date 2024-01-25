@@ -1028,3 +1028,71 @@ anvi-cluster-contigs -p ./6_merged_profiles/PROFILE.db -c ./5_anvio_profiles/con
 
 anvi-summarize -p ./6_merged_profiles/PROFILE.db -c ./5_anvio_profiles/contigs.db -o SUMMARY_MAXBIN2 -C MAXBIN2
 ```
+
+after finishing no more srun!
+
+
+summerization:
+
+raw reads, file format: fastq 
+> quality control from these raw reads (quality control means: cleaning and )
+outcome: 
+clean reads, clean fastq
+> assembled them, file format now fasta format fa
+fa contigs
+> quality control with fa contogs
+>
+contigs are biologically: DNA 
+> mapping (major step): input was fa contigs + clean reads (these where mapped)
+coverage: abundance of short reads, which are alligning at that area, genome signature
+to reconstruckt bins we need 
+xxx???
+binning: competentness , contigs
+
+
+### MAGs Quality Estimation
+
+Estimate your genomes completeness and contamination levels.
+You can assess the quality of your bins by using:
+
+```
+anvi-estimate-genome-completeness -c /PATH/TO/contigs.db -p /PATH/TO/merged_profiles/PROFILE.db -C METABAT
+```
+```
+anvi-estimate-genome-completeness -c ./5_anvio_profiles/contigs.db -p ./6_merged_profiles/PROFILE.db -C METABAT
+```
+
+In the next part you will visualize and evaluate your results.
+If you want to check what collections you generated you can use:
+
+```
+anvi-estimate-genome-completeness -p ./6_merged_profiles/PROFILE.db -c ./5_anvio_profiles/contigs.db --list-collections
+```
+
+fill in the lacking parameters:
+
+```
+anvi-estimate-genome-completeness -p ./6_merged_profiles/PROFILE.db -c ./5_anvio_profiles/contigs.db --list-collections
+```
+
+module load gcc12-env/12.1.0
+module load miniconda3/4.12.0
+conda activate anvio-8
+
+anvi-interactive -p ./6_merged_profiles/PROFILE.db -c ./5_anvio_profiles/contigs.db -C METABAT
+
+anvi-interactive -p ./6_merged_profiles/PROFILE.db -c ./5_anvio_profiles/contigs.db -C MAXBIN2
+
+the Picture ? is opened manually in a Webbrowser
+
+safe it as pdf and answer the following Questions:
+
+Which binning strategy gives you the best quality for the
+bins?
+
+- Metabat: Gives  less blanks. The redunancy overall is much better compared to Maxbin2, there are ore bacteria with a completion above 90% and a redundancy less than 5%.  
+  
+How many Archaea bins do you get that are of High Quality? How many Bacteria bins do you get that are of High Quality?
+
+Metabat: > Archea - 0 (only one Archaea with redundancy 5,26 and completion 97,3), > Bacteria - 10
+Maxbin: > Archea - 0 (only one Archaea with redundancy 80,26 and completion 96,05) > Bacteria - 3
