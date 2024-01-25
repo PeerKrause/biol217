@@ -882,7 +882,9 @@ anvi-run-hmms -c contigs.db --num-threads 4
 
 Put following command in the Terminal and execute:
 
+```
 srun --reservation=biol217 --pty --mem=10G --nodes=1 --tasks-per-node=1 --cpus-per-task=1 --nodelist=node002 /bin/bash
+```
 
 dann arbeitsbereich wurde geändert auf node105 (normalersweise arbeiten allle auf cluster, aber es werden minicluster erstellt auf dem das data prep weiter läuft)
 
@@ -906,20 +908,39 @@ Together with a very extensive program, anvi’o offers a lot of explanations on
 
 anvi’o does this by using samtools in the background, it merges two separate samtools commands (sorting and indexing = fo each .bam file you have, there also is a .bam.bai file in the same directory) into one.
 
-
 The first step will be to sort and index your .bam files.
 For this use the following command:
 
+Change the parameters and create the finnished command:
+
+```
 for i in *.bam; do anvi-init-bam $i -o "$i".sorted.bam; done
 
 anvi-profile -i ? -c ? --output-dir ?
 
 anvi-profile -i YOUR_SORTED.bam -c contigs.db --output-dir OUTPUT_DIR
+```
 
-finished code:
+Do it three times for the BGR .bam files that are the 3_binning_out (mit Cd Path angeben). Each File needs a seperate folder, which are created manually by Anvio.
+
+
+Hat nicht fuktioniert wegen folgendem Befehl:
+```
+for i in *.bam; do anvi-init-bam $i -o "$i".sorted.bam; done
+```
+
+Die Files wurden zurück in den `3_binning_out` folder getan. Wegen output (-0) "$i".
+
+
+Viele Proboleme, finaler code ?:
 
 ```
-anvi-profile -i *.bam -c ../5_anvio_profiles/contigs.db --output-dir ../5_anvio_profiles
+anvi-profile -i BGR_130305.bam.sorted.bam -c ../5_anvio_profiles/contigs.db --output-dir ../5_anvio_profile/BGR_130305
+
+anvi-profile -i BGR_130527.bam.sorted.bam -c ../5_anvio_profiles/contigs.db --output-dir ../5_anvio_profile/BGR_130572
+
+anvi-profile -i BGR_130708.bam.sorted.bam -c ../5_anvio_profiles/contigs.db --output-dir ../5_anvio_profile/BGR_130708
+
 ```
 
 
@@ -928,4 +949,9 @@ anvi-profile -i *.bam -c ../5_anvio_profiles/contigs.db --output-dir ../5_anvio_
 
 anvi-merge /PATH/TO/SAMPLE1/? /PATH/TO/SAMPLE2/? /PATH/TO/SAMPLE3/? -o ? -c ? --enforce-hierarchical-clustering
 
-anvi-merge /PATH/TO/SAMPLE1/PROFILE.db /PATH/TO/SAMPLE2/PROFILE.db /PATH/TO/SAMPLE3/PROFILE.db -o /PATH/TO/merged_profiles -c /PATH/TO/contigs.db --enforce-hierarchical-clustering
+Put in Input, Output, and c ?
+Finnished command:
+
+```
+anvi-merge ../5_anvio_profile/BGR_130305/ ../5_anvio_profile/BGR_130572 ../5_anvio_profile/BGR_130708 -o .../Metagenomics/merged_profiles -c  ../5_anvio_profiles/contigs.db --enforce-hierarchical-clustering
+```
