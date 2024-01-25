@@ -890,16 +890,42 @@ dann arbeitsbereich wurde geändert auf node105 (normalersweise arbeiten allle a
 
 Anschließend folgende Module laden:
 
-``` module load gcc12-env/12.1.0
+``` 
+module load gcc12-env/12.1.0
 module load miniconda3/4.12.0
 conda activate anvio-8
 
 anvi-display-contigs-stats contigs.db
  ```
 
-### Binning with ANVI´O
+In a +new Terminal log into the follwoilng local host:
 
-Prepare for the next day: 
+```
+ssh -L 8060:localhost:8080 sunam233@caucluster.rz.uni-kiel.de
+```
+After that log in with given number = n100
+
+```
+ssh -L 8080:localhost:8080 n100
+```
+
+open the following link on google chrome (or else)
+
+```
+http://127.0.0.1:8060 or
+
+http://127.0.0.1:8080
+```
+Presented are the finnished xxx???
+
+Safe as .pdf with `strg + p`
+
+
+## Protocol Day 4
+
+Anvi-profile wurde auch an Tag 3 scho ausgeführt, war aber fehlerhaft.
+
+### Binning with ANVI´O
 
 #### Anviprofile
 From here on you will be using ANVI´O, an ANalysis and Visualization platform for microbial ´Omics.
@@ -932,14 +958,14 @@ for i in *.bam; do anvi-init-bam $i -o "$i".sorted.bam; done
 Die Files wurden zurück in den `3_binning_out` folder getan. Wegen output (-0) "$i".
 
 
-Viele Proboleme, finaler code ?:
+Viele Proboleme, finaler code ?: Problemlösung: Jeden command einzeln direkt im Terminal ausführen.
 
 ```
-anvi-profile -i BGR_130305.bam.sorted.bam -c ../5_anvio_profiles/contigs.db --output-dir ../5_anvio_profile/BGR_130305
+anvi-profile -i BGR_130305.bam.sorted.bam -c ../5_anvio_profiles/contigs.db --output-dir ../5_anvio_profiles/BGR_130305
 
-anvi-profile -i BGR_130527.bam.sorted.bam -c ../5_anvio_profiles/contigs.db --output-dir ../5_anvio_profile/BGR_130572
+anvi-profile -i BGR_130527.bam.sorted.bam -c ../5_anvio_profiles/contigs.db --output-dir ../5_anvio_profiles/BGR_130572
 
-anvi-profile -i BGR_130708.bam.sorted.bam -c ../5_anvio_profiles/contigs.db --output-dir ../5_anvio_profile/BGR_130708
+anvi-profile -i BGR_130708.bam.sorted.bam -c ../5_anvio_profiles/contigs.db --output-dir ../5_anvio_profiles/BGR_130708
 
 ```
 
@@ -952,6 +978,53 @@ anvi-merge /PATH/TO/SAMPLE1/? /PATH/TO/SAMPLE2/? /PATH/TO/SAMPLE3/? -o ? -c ? --
 Put in Input, Output, and c ?
 Finnished command:
 
+Use the SBATCH skript again:
 ```
-anvi-merge ../5_anvio_profile/BGR_130305/ ../5_anvio_profile/BGR_130572 ../5_anvio_profile/BGR_130708 -o .../Metagenomics/merged_profiles -c  ../5_anvio_profiles/contigs.db --enforce-hierarchical-clustering
+anvi-merge ./5_anvio_profiles/BGR_130305/PROFILE.db ./5_anvio_profiles/BGR_130572/PROFILE.db ./5_anvio_profiles/BGR_130708/PROFILE.db -o ./6_merged_profiles -c ./5_anvio_profiles/contigs.db --enforce-hierarchical-clustering
+```
+
+after that the computing is done
+
+### Binning
+
+Two binners are used. Firts Metabat and then MaxBin2
+
+#### Binning with Metabat2
+Fill in the parameters:
+
+```
+anvi-cluster-contigs -p /PATH/TO/merged_profiles/PROFILE.db -c /PATH/TO/contigs.db -C METABAT --driver metabat2 --just-do-it --log-file log-metabat2
+
+anvi-summarize -p /PATH/TO/merged_profiles/PROFILE.db -c /PATH/TO/contigs.db -o SUMMARY_METABAT -C METABAT ?
+```
+
+-p output folder from the last step/PROFILE.db file with the merged profiles
+-c contig.db folder
+-C name of the output collection that this step will create. Note that this will be stored within your merged profiles and not as an extra file
+--driver here you can name the driver you want to use
+--just-do-it you need to specify this flag as anvi-cluster-contigs is an experimental workflow of the anvi´o program and therefore still under development. This way the developers want to make sure you are aware of it.
+
+put the following commands in the SBATCH srcipt and chage the Headlines:
+
+```
+anvi-cluster-contigs -p ./6_merged_profiles/PROFILE.db -c ./5_anvio_profiles/contigs.db -C METABAT --driver metabat2 --just-do-it --log-file log-metabat2
+
+anvi-summarize -p ./6_merged_profiles/PROFILE.db -c ./5_anvio_profiles/contigs.db -o SUMMARY_METABAT -C METABAT
+
+```
+
+#### Binning with MaxBin2
+
+For the seccond binning just do the same steps like before but with MaxBin2:
+
+```
+anvi-cluster-contigs -p /PATH/TO/merged_profiles/PROFILE.db -c /PATH/TO/contigs.db -C MAXBIN2 --driver maxbin2 --just-do-it --log-file log-maxbin2
+
+anvi-summarize -p /PATH/TO/merged_profiles/PROFILE.db -c /PATH/TO/contigs.db -o SUMMARY_MAXBIN2 -C MAXBIN2
+```
+
+```
+anvi-cluster-contigs -p ./6_merged_profiles/PROFILE.db -c ./5_anvio_profiles/contigs.db -C MAXBIN2 --driver maxbin2 --just-do-it --log-file log-maxbin2
+
+anvi-summarize -p ./6_merged_profiles/PROFILE.db -c ./5_anvio_profiles/contigs.db -o SUMMARY_MAXBIN2 -C MAXBIN2
 ```
