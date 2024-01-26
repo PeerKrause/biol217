@@ -1113,6 +1113,13 @@ Then use anvi-summarize as displayed below.
 anvi-summarize -c ./5_anvio_profiles/contigs.db -p ./6_merged_profiles/PROFILE.db -C METABAT -o SUMMARY_METABAT2 --just-do-it
 ```
 
+
+search the folder of the different bins with:
+
+```
+anvi-estimate-genome-completeness -c ./5_anvio_profiles/contigs.db -p ./6_merged_profiles/PROFILE.db -C METABAT
+```
+
 As each bin is stored in its own folder, use:
 
 
@@ -1129,8 +1136,66 @@ cp ../ARCHAEA_BIN_REFINEMENT/*.fa /PATH/TO/ARCHAEA_BIN_REFINEMENT/
 
 
 
-bin for archea 
+bin for archea:
 
 METABAT__25 | ARCHAEA
 METABAT__40 | ARCHAEA
 METABAT__15 | ARCHAEA
+
+### Day5
+
+#### Chimera detection in MAGs
+
+Use GUNC to check run chimera detection. Chimeric genomes are genomes wrongly assembled out of two or more genomes coming from separate organisms.
+
+to use GUNC , activate the following environment:
+
+```
+module load gcc12-env/12.1.0
+module load miniconda3/4.12.0
+conda activate gunc
+```
+
+Use the following loop to process all your files in one run:
+
+```
+cd ./Metagenomics/ARCHAEA_BIN_REFINEMENT
+
+mkdir GUNC
+
+for i in *.fa; do gunc run -i "$i" -r /work_beegfs/sunam233/Databases/gunc_db_progenomes2.1.dmnd --out_dir GUNC --threads 10 --detailed_output; done
+```
+
+Answer the following questions:
+
+Do you get Archaea bins that are chimeric? hint: look at the CSS score (explained in the lecture) and the column PASS GUNC in the tables outputs per bin in your gunc_output folder.
+
+In your own words (2 sentences max), explain what is a chimeric bin.
+
+
+#### Manual bin refinement
+
+As large metagenome assemblies can result in hundreds of bins, pre-select the better ones for manual refinement, e.g. > 70% completeness.
+
+Before you start, make a copy/backup of your unrefined bins the ARCHAEA_BIN_REFINEMENT.
+
+cp ./Metagenomics/ARCHAEA_BIN_REFINEMENT/*.fa
+
+First load the following Modules:
+
+```
+module load gcc12-env/12.1.0
+module load miniconda3/4.12.0
+conda activate anvio-8
+```
+
+Use anvi refine to work on your bins manually with the following command (fill in the parameters):
+
+```
+anvi-refine -c /PATH/TO/contigs.db -C METABAT -p /PATH/TO/merged_profiles/PROFILE.db --bin-id Bin_METABAT__##
+```
+
+```
+anvi-refine -c ./5_anvio_profiles/contigs.db -C METABAT -p ./6_merged_profiles/PROFILE.db --bin-id Bin_METABAT__##
+```
+
