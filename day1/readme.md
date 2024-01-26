@@ -1179,7 +1179,9 @@ As large metagenome assemblies can result in hundreds of bins, pre-select the be
 
 Before you start, make a copy/backup of your unrefined bins the ARCHAEA_BIN_REFINEMENT.
 
+```
 cp ./Metagenomics/ARCHAEA_BIN_REFINEMENT/*.fa
+``` (done manually) 
 
 First load the following Modules:
 
@@ -1195,7 +1197,26 @@ Use anvi refine to work on your bins manually with the following command (fill i
 anvi-refine -c /PATH/TO/contigs.db -C METABAT -p /PATH/TO/merged_profiles/PROFILE.db --bin-id Bin_METABAT__##
 ```
 
+Bin_METABAT__# = METABAT__25 | ARCHAEA, METABAT__40 | ARCHAEA, METABAT__15 | ARCHAEA
+
+
+Do this for all three Archaea in the console: 
+
 ```
-anvi-refine -c ./5_anvio_profiles/contigs.db -C METABAT -p ./6_merged_profiles/PROFILE.db --bin-id Bin_METABAT__##
+anvi-refine -c ../5_anvio_profiles/contigs.db -C METABAT -p ../6_merged_profiles/PROFILE.db --bin-id METABAT__25
+
+anvi-refine -c ../5_anvio_profiles/contigs.db -C METABAT -p ../6_merged_profiles/PROFILE.db --bin-id METABAT__40
+
+anvi-refine -c ../5_anvio_profiles/contigs.db -C METABAT -p ../6_merged_profiles/PROFILE.db --bin-id METABAT__15
 ```
+
+
+
+
+
+module load gcc12-env/12.1.0
+module load miniconda3/4.12.0
+conda activate anvio-8
+
+anvi-refine -c ./5_anvio_profiles/contigs.db -C METABAT -p ./6_merged_profiles/PROFILE.db --bin-id METABAT__25
 
