@@ -1166,11 +1166,39 @@ mkdir GUNC
 for i in *.fa; do gunc run -i "$i" -r /work_beegfs/sunam233/Databases/gunc_db_progenomes2.1.dmnd --out_dir GUNC --threads 10 --detailed_output; done
 ```
 
+
+
+gunc plot -d ./GUNC/diamond_output/METABAT__25-contigs.diamond.progenomes_2.1.out -g ./GUNC/genes_calls/gene_counts.json
+
+
+
+
 Answer the following questions:
 
 Do you get Archaea bins that are chimeric? hint: look at the CSS score (explained in the lecture) and the column PASS GUNC in the tables outputs per bin in your gunc_output folder.
 
 In your own words (2 sentences max), explain what is a chimeric bin.
+
+
+
+#Chimera detection sbatch script
+
+module load gcc12-env/12.1.0
+module load miniconda3/4.12.0
+conda activate gunc
+
+cd ./Metagenomics/ARCHAEA_BIN_REFINEMENT
+
+mkdir GUNC
+
+for i in *.fa; do gunc run -i "$i" -r /work_beegfs/sunam233/Databases/gunc_db_progenomes2.1.dmnd --out_dir GUNC --threads 10 --detailed_output; done
+
+gunc plot -d ./GUNC/diamond_output/METABAT__25-contigs.diamond.progenomes_2.1.out -g ./GUNC/genes_calls/gene_counts.json
+
+gunc plot -d ./GUNC/diamond_output/METABAT__40-contigs.diamond.progenomes_2.1.out -g ./GUNC/genes_calls/gene_counts.json
+
+gunc plot -d ./GUNC/diamond_output/METABAT__15-contigs.diamond.progenomes_2.1.out -g ./GUNC/genes_calls/gene_counts.json
+
 
 
 #### Manual bin refinement
@@ -1202,8 +1230,7 @@ Bin_METABAT__# = METABAT__25 | ARCHAEA, METABAT__40 | ARCHAEA, METABAT__15 | ARC
 
 Do this for all three Archaea in the console: 
 
-```
-anvi-refine -c ../5_anvio_profiles/contigs.db -C METABAT -p ../6_merged_profiles/PROFILE.db --bin-id METABAT__25
+```anvi-refine -c ../5_anvio_profiles/contigs.db -C METABAT -p ../6_merged_profiles/PROFILE.db --bin-id METABAT__25
 
 anvi-refine -c ../5_anvio_profiles/contigs.db -C METABAT -p ../6_merged_profiles/PROFILE.db --bin-id METABAT__40
 
@@ -1219,4 +1246,86 @@ module load miniconda3/4.12.0
 conda activate anvio-8
 
 anvi-refine -c ./5_anvio_profiles/contigs.db -C METABAT -p ./6_merged_profiles/PROFILE.db --bin-id METABAT__25
+
+40 und 15 nicht für weitere studien aber man kann die taxonomy einsehen
+
+25 zeigt gute qualität
+
+
+
+#### Coverage visualization
+
+how abundant are the archaea bins in the 3 samples? (relative abundance)
+
+you can also use anvi-inspect -p -c, anvi-script-get-coverage-from-bam or, anvi-profile-blitz. Please look up the help page for each of those commands and construct the appropriate command line
+
+commands:
+
+-p ./6_merged_profiles/PROFILE.db
+-c ./5_anvio_profiles/contigs.db
+
+```
+anvi-inspect -p ./6_merged_profiles/PROFILE.db -c ./5_anvio_profiles/contigs.db --split-name 
+ 
+anvi-script-get-coverage-from-bam
+
+anvi-profile-blitz
+```
+
+### Taxonomic assignment
+
+
+You will now add taxonomic annotations to your MAG.
+
+Fill in the missing Parameters:
+
+```anvi-run-scg-taxonomy -c /PATH/TO/contigs.db -T 20 -P 2
+```
+
+Finnished comand:
+
+```
+anvi-run-scg-taxonomy -c ./5_anvio_profiles/contigs.db -T 20 -P 2
+```
+
+Now you can run anvi-estimate-scg-taxonomy, ‘This program makes quick taxonomy estimates for genomes, metagenomes, or bins stored in your contigs-db using single-copy core genes`.
+
+To estimate abundance of Ribosomal RNAs within your dataset (coverage) use:
+
+```
+anvi-estimate-scg-taxonomy -c /PATH/TO/contigs.db -p /PATH/TO/profile.db --metagenome-mode --compute-scg-coverages --update-profile-db-with-taxonomy > temp.txt
+```
+
+```
+anvi-estimate-scg-taxonomy -c ./5_anvio_profiles/contigs.db -p ./6_merged_profiles/PROFILE.db --compute-scg-coverages --update-profile-db-with-taxonomy > temp.txt
+```
+
+ONE final summary to get comprehensive info about your METABAT2 bins:
+
+```
+anvi-summarize -p /PATH/TO/merged_profiles/PROFILE.db -c /PATH/TO/contigs.db --metagenome-mode -o /PATH/TO/SUMMARY_METABAT2 -C METABAT2
+```
+
+```
+anvi-summarize -p ./6_merged_profiles/PROFILE.db -c ./5_anvio_profiles/contigs.db --metagenome-mode -o ./SUMMARY_METABAT2 -C METABAT2
+```
+
+batch script for Taxonomi:
+
+```
+module load gcc12-env/12.1.0
+module load miniconda3/4.12.0
+conda activate anvio-8module load gcc12-env/12.1.0
+module load miniconda3/4.12.0
+conda activate anvio-8
+
+cd /work_beegfs/sunam233/Metagenomics
+
+anvi-run-scg-taxonomy -c ./5_anvio_profiles/contigs.db -T 20 -P 2
+
+anvi-estimate-scg-taxonomy -c ./5_anvio_profiles/contigs.db -p ./6_merged_profiles/PROFILE.db --compute-scg-coverages --update-profile-db-with-taxonomy > temp.txt
+
+anvi-summarize -p ./6_merged_profiles/PROFILE.db -c ./5_anvio_profiles/contigs.db --metagenome-mode -o ./SUMMARY_METABAT2 -C METABAT2
+
+```
 
