@@ -1329,3 +1329,20 @@ anvi-summarize -p ./6_merged_profiles/PROFILE.db -c ./5_anvio_profiles/contigs.d
 
 ```
 
+
+
+
+How good is the quality of genome?
+
+Why did we use Hybrid assembler?
+To combine short reads and long reads to get a better assembly
+
+What is the difference between short and long reads?
+Shortreads: produced by Illumina, about 15 bp long
+Longreads:  
+
+Did we use Single or Paired end reads? Why?
+There is no need to use 
+
+Write down about the classification of genome we have used here
+d__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Bacteroidaceae;g__Bacteroides;s__Bacteroides sp002491635
