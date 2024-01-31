@@ -1346,3 +1346,24 @@ There is no need to use
 
 Write down about the classification of genome we have used here
 d__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Bacteroidaceae;g__Bacteroides;s__Bacteroides sp002491635
+
+
+
+## Day 6 
+
+#### Bacterial chromosme Data
+
+Clostridium tetani E88
+Clostridium argentinense strain 89G
+Clostridium botulinum A str. ATCC 3502
+
+Bacteroides caccae CL03T12C61
+Bacteroides fragilis strain FDAARGOS_1225
+Bacteroides humanifaecis strain KGMB07931
+
+Vibrio ruber strain LMG 23124
+Vibrio vulnificus strain FORC_037 
+Vibrio ziniensis strain ZWAL4003
+
+Pseudomonas canadensis strain GZH03
+
