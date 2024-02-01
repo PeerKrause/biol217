@@ -1382,13 +1382,18 @@ answer in notes
 1.MM_RS00150: Mt is up regulated by -2.06       yes
 2.MM_RS04770: Mt is up regulated by by -1.2     yes 
 3.MM_RS05370: Mt is up regulated by by -1.16    yes
-4.MM_RS07870: Mt is up regulated by by -1.15    yes
-5.MM_RS05335: Mt is up regulated by by -1.09    yes
+4.MM_RS07870: Mt is up regulated by by -1.15
+5.MM_RS05335: Mt is up regulated by by -1.09
 
 
 5 genes that are upregulated:
-1.MM_RS03790: Mt is downregulated by 1.9    yes
-2.MM_RS06645: Mt is downregulated by 1.71   yes
-3.MM_RS00155: Mt is downregulated by 1.58   yes
-4.MM_RS02310: Mt is downregulated by 1.3    yes
-5.MM_RS00765: Mt is downregulated by 1.23   yes
+1.MM_RS03790: Mt is downregulated by 1.9
+2.MM_RS06645: Mt is downregulated by 1.71
+3.MM_RS00155: Mt is downregulated by 1.58
+4.MM_RS02310: Mt is downregulated by 1.3
+5.MM_RS00765: Mt is downregulated by 1.23
+
+
+#### Bilder eingügen
+
+![igb](../Bilder/Screenshot-1.png)
