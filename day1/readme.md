@@ -1367,3 +1367,28 @@ Vibrio ziniensis strain ZWAL4003
 
 Pseudomonas canadensis strain GZH03
 
+## Day 7
+
+look in batch script
+
+## Day 8 Transcriptomics
+
+reademption create --project_path READemption_analysis --species metanosarcina="Methanosarcina mazei Gö1"
+
+What is tnoar? fole format?
+answer in notes
+
+5 gene that are downregulated: (mutantvs.wildtype)
+1.MM_RS00150: Wt is downregulated by -2.06
+2.MM_RS04770: Wt is downregulated by -1.2
+3.MM_RS05370: Wt is downregulated by -1.16
+4.MM_RS07870: Wt is downregulated by -1.15
+5.MM_RS05335: Wt is downregulated by -1.09
+
+
+5 genes that are upregulated:
+1.MM_RS04790: Wt is upregulated by 1.9
+2.MM_RS06645: Wt is upregulated by 1.71
+3.MM_RS00155: Wt is upregulated by 1.58
+4.MM_RS02310: Wt is upregulated by 1.3
+5.MM_RS00765: Wt is upregulated by 1.23
