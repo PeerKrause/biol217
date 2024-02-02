@@ -1375,7 +1375,8 @@ look in batch script
 
 reademption create --project_path READemption_analysis --species metanosarcina="Methanosarcina mazei Gö1"
 
-What is tnoar? fole format?
+## Day 9
+What is tnoar? file format?
 answer in notes
 
 5 gene that are downregulated: (mutantvs.wildtype)
@@ -1394,6 +1395,37 @@ answer in notes
 5.MM_RS00765: Mt is downregulated by 1.23
 
 
-#### Bilder eingügen
+#### Bilder einfügen
 
 ![igb](../Bilder/Screenshot-1.png)
+
+#### Demo/together_ Find the ORF encoding csrA and some of its features
+Answer the following Questions with looking in the Data
+1. Its start codon (canonical ATG or alternative GTG, TTG):
+
+TAC > ATG
+
+2. Its stop codon (TAG, TGA, TAA):
+
+ATT > TAA
+
+3. Its length in amino acids:
+
+61 (Length = 186 bp, but 1 triplet (codon) as stopcodon, 183/3=61)
+
+4. Its SD (consensus AGGAGG at -7 to -4)
+
+-7 = TCCTC > AGGAG
+
+5. The name of the upstream gene:
+
+alaS
+
+6. D oyu think csrA is transated? Why?
+
+Probably
+
+
+### Zusammenfassung Day 10
+
+#### Different Omics Methods
